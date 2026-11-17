@@ -22,15 +22,21 @@ Run `sim6800.ui.Main`. Right now it only checks that reset works
 
 ### Alena - memory, loader, UI
 
-### CPU core, control flow, interrupts
-- Opcode table: every valid opcode -> mnemonic, addressing mode, byte length (datasheet instruction tables).
-- `step()` is empty today, so `run()` would loop forever if called. Fill `step()` first.
-- `step()`: fetch opcode, look it up, compute the operand address (immediate, direct, extended, indexed, relative, inherent), execute.
-- Branches (BRA BCC BCS BEQ BNE BMI BPL BVC BVS BGE BGT BLE BLT BHI BLS BSR), JMP, JSR, RTS, RTI, SWI, WAI, NOP.
-- Stack/register moves: PSHA PSHB PULA PULB INS DES TSX TXS TAP TPA, CLI SEI CLC SEC CLV SEV.
-- IRQ/NMI entry (7-byte push, set I, load vector) and WAI behaviour.
+### Vu - CPU core, control flow, interrupts (done)
+- `OpcodeTable`: all 197 opcodes -> mnemonic, addressing mode, length (`Mode` enum, `Opcode` record).
+- `Cpu.operandAddress()`: immediate, direct, extended, indexed, relative.
+- `Cpu.step()`: pending NMI/IRQ check, fetch, decode, `execute()`. `run()` goes until WAI.
+- Branches, JMP, JSR, BSR, RTS, stack ops, TAP/TPA, flag set/clear, NOP, SWI, WAI, RTI.
+- Interrupts: `setIrqLine(boolean)` (level), `triggerNmi()` (edge), 7-byte push in Table 3.3 order.
+  WAI skips the push because the registers are already stacked.
+- Illegal opcode throws `IllegalStateException` with the address; the UI should catch and show it.
 
-### data, arithmetic, logic (and their flags)
+### Gus - data, arithmetic, logic (and their flags)
+Goes in `cpu/DataInstructions.java`. `Cpu.execute()` already sends every mnemonic it
+does not own to `DataInstructions.execute(cpu, mnemonic, ea)` with the operand address
+computed (`ea = -1` for accumulator forms like ASLA).
+Operand: `cpu.read8(ea)` / `cpu.write8(ea, v)`. Registers: `cpu.a cpu.b cpu.x cpu.sp`.
+Flags: `cpu.setFlag(Cpu.C, ...)`, `cpu.setNZ8(v)`. Keep 8-bit results `& 0xFF`.
 - Loads/stores/transfers: LDAA LDAB STAA STAB LDX STX LDS STS TAB TBA.
 - Arithmetic: ADDA ADDB ADCA ADCB ABA SUBA SUBB SBCA SBCB SBA CMPA CMPB CBA CPX INC DEC NEG DAA INX DEX.
 - Logic/test: ANDA ANDB ORAA ORAB EORA EORB BITA BITB COM CLR TST.
