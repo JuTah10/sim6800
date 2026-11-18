@@ -45,3 +45,27 @@ Flags: `cpu.setFlag(Cpu.C, ...)`, `cpu.setNZ8(v)`. Keep 8-bit results `& 0xFF`.
 
 Everyone: test your own instructions with .s19 files through the UI, compare against the datasheet.
 Sample test from the handout is in `../6800b1.asm` / `../6800b1.s19`.
+
+## Memory, S19 Loader and UI
+For the memory part, I updated the Ram class to support both RAM and ROM. The CPU can read and write to RAM, but it 
+can't overwrite ROM normally. I also added basic support for I/O devices that will be used later.
+
+The S19Loader class reads S19 files and loads the data into memory. It supports S0, S1 and S9 records.
+
+For the UI, I made a simple text-based menu where the user can load S19 files, view memory, check CPU registers, clear RAM 
+and reset the CPU. The run and step options are also included, but they still need the CPU instructions to be completed.
+
+I tested the program using two sample S19 files.
+
+The RAM file loaded 16 bytes, and address 00A0 showed 04 03 05.
+The ROM file loaded 11 bytes, and address FC00 showed 7E 00 00.
+After resetting the CPU, the PC showed FC00.
+I also tested ROM protection by trying to overwrite a ROM address and clearing RAM. The ROM values stayed the same.
+
+To load the sample files, use:
+
+samples/sample_ram.s19 for RAM
+samples/sample_rom.s19 for ROM
+
+The CPU execution options will work once the remaining CPU instructions are implemented.
+
