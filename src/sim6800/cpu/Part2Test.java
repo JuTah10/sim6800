@@ -26,7 +26,7 @@ public class Part2Test {
     }
 
     public static void main(String[] args) {
-        // ---------- program 1: SEC, BCS taken, BSR/RTS, SEI/CLI, SWI, RTI, WAI ----------
+        // program 1: SEC, BCS taken, BSR/RTS, SEI/CLI, SWI, RTI, WAI
         Ram ram = new Ram();
         load(ram, 0xFFFE, 0x00, 0x00);          // reset -> 0000
         load(ram, 0xFFFA, 0x00, 0x50);          // SWI   -> 0050
@@ -71,7 +71,7 @@ public class Part2Test {
         cpu.run();                               // must do nothing now
         check("run() stops at WAI", cpu.pc, 0x000A);
 
-        // ---------- program 2: JMP, JSR ext, PSHA/PULA, TSX, TAP/TPA, BCS not taken ----------
+        // program 2: JMP, JSR ext, PSHA/PULA, TSX, TAP/TPA, BCS not taken
         ram = new Ram();
         load(ram, 0xFFFE, 0x00, 0x10);
         load(ram, 0x0010, 0x7E, 0x00, 0x20);    // JMP $0020
@@ -96,7 +96,7 @@ public class Part2Test {
         check("a from TPA", cpu.a, 0xDA);
         check("sp after WAI", cpu.sp, 0x00F8);   // JSR +2, PSHA +1, PULA -1, RTS -2, WAI +7
 
-        // ---------- program 3: backward branch taken ----------
+        // program 3: backward branch taken
         ram = new Ram();
         load(ram, 0xFFFE, 0x00, 0x00);
         load(ram, 0x0000,

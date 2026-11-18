@@ -15,7 +15,7 @@ public final class OpcodeTable {
         TABLE[code] = new Opcode(mnemonic, mode, bytes);
     }
 
-    // ---- inherent, accumulator and stack operations (0x00-0x5F) ----
+    // inherent, accumulator and stack operations (0x00-0x5F)
     static {
         op(0x01, "NOP", INH, 1);
         op(0x06, "TAP", INH, 1);
@@ -74,7 +74,7 @@ public final class OpcodeTable {
         }
     }
 
-    // ---- memory read-modify-write and JMP (0x60-0x7F) ----
+    // memory read-modify-write and JMP (0x60-0x7F)
     static {
         String[] rmw = {"NEG", null, null, "COM", "LSR", null, "ROR", "ASR",
                         "ASL", "ROL", "DEC", null, "INC", "TST", "JMP", "CLR"};
@@ -85,7 +85,7 @@ public final class OpcodeTable {
         }
     }
 
-    // ---- accumulator/memory operations (0x80-0xFF) ----
+    // accumulator/memory operations (0x80-0xFF)
     // Low nibble selects the operation, high nibble selects accumulator and mode:
     //   8x A imm   9x A dir   Ax A idx   Bx A ext
     //   Cx B imm   Dx B dir   Ex B idx   Fx B ext
