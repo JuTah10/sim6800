@@ -25,10 +25,10 @@ Run `sim6800.ui.Main`. Right now it only checks that reset works
 ### Vu - CPU core, control flow, interrupts (done)
 - `OpcodeTable`: all 197 opcodes -> mnemonic, addressing mode, length (`Mode` enum, `Opcode` record).
 - `Cpu.operandAddress()`: immediate, direct, extended, indexed, relative.
-- `Cpu.step()`: pending NMI/IRQ check, fetch, decode, `execute()`. `run()` goes until WAI.
+- `Cpu.step()`: fetch, decode, `execute()`. `run()` goes until WAI.
 - Branches, JMP, JSR, BSR, RTS, stack ops, TAP/TPA, flag set/clear, NOP, SWI, WAI, RTI.
-- Interrupts: `setIrqLine(boolean)` (level), `triggerNmi()` (edge), 7-byte push in Table 3.3 order.
-  WAI skips the push because the registers are already stacked.
+- SWI/WAI push the 7-byte frame in datasheet order (PC, X, A, B, CCR), RTI pulls it.
+  The IRQ/NMI pins are not simulated, nothing in this phase can drive them.
 - Illegal opcode throws `IllegalStateException` with the address; the UI should catch and show it.
 
 ### Gus - data, arithmetic, logic (and their flags)
