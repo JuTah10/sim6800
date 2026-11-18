@@ -75,16 +75,6 @@ public class Ram implements Memory {
         }
     }
 
-    // Check whether an address is ROM
-    public boolean isRom(int address) {
-        return rom[address & 0xFFFF];
-    }
-
-    // Check whether an address belongs to a device
-    public boolean isIoAddress(int address) {
-        return ports[address & 0xFFFF] != null;
-    }
-
     // Connect a device to a range of memory addresses
     public void connectPort(int start, int end, IoPort port) {
 
