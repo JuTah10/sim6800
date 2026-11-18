@@ -16,9 +16,6 @@ public class Main {
         Ram ram = new Ram();
         Cpu cpu = new Cpu(ram);
 
-        // Change this to true when the CPU instructions are ready
-        boolean cpuReady = false;
-
         boolean running = true;
 
         while (running) {
@@ -48,20 +45,21 @@ public class Main {
                     break;
 
                 case "3":
-                    if (cpuReady) {
+                    // runs until WAI, or stops on an illegal / not yet implemented opcode
+                    try {
                         cpu.run();
-                        System.out.println("CPU paused.");
-                    } else {
-                        System.out.println("CPU instructions not ready yet.");
+                        System.out.println("CPU paused at WAI.");
+                    } catch (RuntimeException e) {
+                        System.out.println("CPU stopped: " + e.getMessage());
                     }
                     break;
 
                 case "4":
-                    if (cpuReady) {
+                    try {
                         cpu.step();
                         System.out.println("One instruction executed.");
-                    } else {
-                        System.out.println("CPU instructions not ready yet.");
+                    } catch (RuntimeException e) {
+                        System.out.println("CPU stopped: " + e.getMessage());
                     }
                     break;
 
