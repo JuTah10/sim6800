@@ -3,13 +3,14 @@
 ## Layout
 
 ```
-src/sim6800/memory   Memory interface, Ram            (address space)
-src/sim6800/cpu      Cpu: registers, flags, bus, stack, reset, step/run
-src/sim6800/ui       Main: test driver                (uses the Cpu, is not part of it)
+src/sim6800/memory   Memory interface, Ram (RAM + ROM + I/O hooks), IoPort, S19Loader
+src/sim6800/cpu      Cpu, OpcodeTable, Mode, Opcode, DataInstructions, Part2Test
+src/sim6800/ui       Main: menu driver (load, run, step, regs, mem, clear, reset, quit)
+samples/             sample_rom.s19 (vector table + JMP $0000), sample_ram.s19 (handout program)
 ```
 
-Run `sim6800.ui.Main`. Right now it only checks that reset works
-(prints pc = 0010, ccr = D0, I = true).
+Run `sim6800.ui.Main`. Load `samples/sample_rom.s19` as ROM first, then a program as RAM.
+`Part2Test` has its own main and checks the control-flow instructions by hand.
 
 ## What we should follow
 
@@ -29,7 +30,7 @@ Run `sim6800.ui.Main`. Right now it only checks that reset works
 - Branches, JMP, JSR, BSR, RTS, stack ops, TAP/TPA, flag set/clear, NOP, SWI, WAI, RTI.
 - SWI/WAI push the 7-byte frame in datasheet order (PC, X, A, B, CCR), RTI pulls it.
   The IRQ/NMI pins are not simulated, nothing in this phase can drive them.
-- Illegal opcode throws `IllegalStateException` with the address; the UI should catch and show it.
+- Illegal opcode throws `IllegalStateException` with the address, the UI shows it as "CPU stopped".
 
 ### Gus - data, arithmetic, logic (and their flags)
 Goes in `cpu/DataInstructions.java`. `Cpu.execute()` already sends every mnemonic it
@@ -53,7 +54,7 @@ can't overwrite ROM normally. I also added basic support for I/O devices that wi
 The S19Loader class reads S19 files and loads the data into memory. It supports S0, S1 and S9 records.
 
 For the UI, I made a simple text-based menu where the user can load S19 files, view memory, check CPU registers, clear RAM 
-and reset the CPU. The run and step options are also included, but they still need the CPU instructions to be completed.
+and reset the CPU. Run and step go until WAI, or stop with a message at the first instruction that is not implemented yet.
 
 I tested the program using two sample S19 files.
 
@@ -67,5 +68,4 @@ To load the sample files, use:
 samples/sample_ram.s19 for RAM
 samples/sample_rom.s19 for ROM
 
-The CPU execution options will work once the remaining CPU instructions are implemented.
 

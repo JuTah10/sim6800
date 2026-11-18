@@ -17,7 +17,7 @@ public class Cpu {
     // the bus, every read and write goes through this
     private final Memory memory;
 
-    // where the CPU looks for the start address of reset and SWI
+    // where the CPU looks for the start address of reset and SWI (our Phase 1 memory map)
     public static final int VEC_SWI   = 0xFFFA;
     public static final int VEC_RESET = 0xFFFE;
 
@@ -204,7 +204,7 @@ public class Cpu {
         }
     }
 
-    // interrupt stack frame, used by SWI, WAI and RTI
+    // interrupt stack frame, used by SWI, WAI and RTI (Phase 1 Table 3.3)
 
     // push the 7 bytes in datasheet order: PC, X, A, B, CCR
     void pushAll() {
