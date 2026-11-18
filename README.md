@@ -32,20 +32,13 @@ Run `sim6800.ui.Main`. Load `samples/sample_rom.s19` as ROM first, then a progra
   The IRQ/NMI pins are not simulated, nothing in this phase can drive them.
 - Illegal opcode throws `IllegalStateException` with the address, the UI shows it as "CPU stopped".
 
-### Gus - data, arithmetic, logic (and their flags)
-Goes in `cpu/DataInstructions.java`. `Cpu.execute()` already sends every mnemonic it
-does not own to `DataInstructions.execute(cpu, mnemonic, ea)` with the operand address
-computed (`ea = -1` for accumulator forms like ASLA).
-Operand: `cpu.read8(ea)` / `cpu.write8(ea, v)`. Registers: `cpu.a cpu.b cpu.x cpu.sp`.
-Flags: `cpu.setFlag(Cpu.C, ...)`, `cpu.setNZ8(v)`. Keep 8-bit results `& 0xFF`.
-- Loads/stores/transfers: LDAA LDAB STAA STAB LDX STX LDS STS TAB TBA.
-- Arithmetic: ADDA ADDB ADCA ADCB ABA SUBA SUBB SBCA SBCB SBA CMPA CMPB CBA CPX INC DEC NEG DAA INX DEX.
-- Logic/test: ANDA ANDB ORAA ORAB EORA EORB BITA BITB COM CLR TST.
-- Shifts/rotates: ASL ASR LSR ROL ROR (accumulator and memory forms).
-- H, V, C rules per instruction come from the datasheet condition-code column. Write a small .s19 test per group.
+### Gus - data, arithmetic, logic (and their flags) (done)
+- `ALU`: one method per operation (LDA, ADD, SUB, CMP, INC, COM, ASL, ROL ...) that takes the
+  operand values, sets the flags from the datasheet condition-code column and returns the result.
+- `DataInstructions`: glue. Maps each mnemonic from the opcode table to the ALU method,
+  picks A or B, reads the operand at `ea` and stores the result back in the register or memory.
 
-Everyone: test your own instructions with .s19 files through the UI, compare against the datasheet.
-Sample test from the handout is in `../6800b1.asm` / `../6800b1.s19`.
+The handout sample (`samples/sample_ram.s19`, same bytes as `6800b1.s19`) runs to WAI with 04 at 00B1.
 
 ## Memory, S19 Loader and UI
 For the memory part, I updated the Ram class to support both RAM and ROM. The CPU can read and write to RAM, but it 
