@@ -2,7 +2,7 @@ package sim6800.cpu;
 
 import sim6800.memory.Ram;
 
-// hand-assembled programs using only Part 2 instructions
+// hand-assembled programs for the control flow, stack, flag and interrupt instructions
 public class Part2Test {
     static int fails = 0;
 

@@ -16,7 +16,7 @@ public class Cpu {
     boolean isWaiting;
     // the bus, every read and write goes through this
     private final Memory memory;
-    // arithmetic / logic operations and their flags (Gus's part)
+    // arithmetic / logic operations and their condition codes
     final ALU alu = new ALU(this);
 
     // where the CPU looks for the start address of reset and SWI (our Phase 1 memory map)
